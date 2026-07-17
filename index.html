@@ -22,17 +22,7 @@
         .category-header { font-size: 18px; font-weight: 700; color: var(--dark); margin: 30px 0 15px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; text-transform: uppercase; }
 
         .item-card { background: white; border-radius: 20px; display: flex; align-items: center; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .card-img { 
-            width: 80px; 
-            height: 80px; 
-            border-radius: 15px; 
-            object-fit: contain; 
-            background-color: #f9f9f9; 
-            margin-right: 15px; 
-            border: 1px solid #eee; 
-            flex-shrink: 0;
-            padding: 5px;
-        }
+        .card-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; margin-right: 15px; border: 1px solid #eee; }
         
         .item-info { flex: 1; }
         .item-info h3 { margin: 0 0 4px 0; font-size: 16px; color: #111; }
@@ -107,7 +97,7 @@
             { n: 'Regular Fries', p: 200, d: 'Salted crispy fries', img: 'https://i.postimg.cc/7hdBNcPw/Untitled_3_copy.png.jpeg' }
         ]}
     ];
-    const coldDrinksList = { 
+            const coldDrinksList = { 
         cat: 'COLD DRINKS ', 
         items: [
             { n: 'Coca-Cola 300ml', p: 80, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/xTC4nSh5/42267-removebg-preview.png' },
@@ -124,18 +114,19 @@
         ]
     };
     
+    
     let cart = {};
 
     function renderMenu() {
         const container = document.getElementById('menu-container');
         container.innerHTML = '';
-        [...menuData, coldDrinksList].forEach(section => {
+        menuData.forEach(section => {
             container.innerHTML += `<div class="category-header">${section.cat}</div>`;
             section.items.forEach(item => {
                 const itemId = item.n.replace(/\s+/g, '');
                 container.innerHTML += `
                     <div class="item-card">
-                        <img src="${item.img}?v=1" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
+                        <img src="${item.img}" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
                         <div class="item-info">
                             <h3>${item.n}</h3>
                             <p>${item.d}</p>
@@ -148,6 +139,25 @@
                         </div>
                     </div>`;
             });
+        });
+        
+        container.innerHTML += `<div class="category-header">${coldDrinksList.cat}</div>`;
+        coldDrinksList.items.forEach(item => {
+            const itemId = item.n.replace(/\s+/g, '');
+            container.innerHTML += `
+                <div class="item-card">
+                    <img src="${item.img}" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
+                    <div class="item-info">
+                        <h3>${item.n}</h3>
+                        <p>${item.d}</p>
+                        <span class="price-tag">Rs. ${item.p}</span>
+                    </div>
+                    <div class="counter">
+                        <button onclick="changeQty('${item.n}', ${item.p}, -1)">-</button>
+                        <span class="qty" id="qty-${itemId}">0</span>
+                        <button onclick="changeQty('${item.n}', ${item.p}, 1)">+</button>
+                    </div>
+                </div>`;
         });
     }
 
@@ -176,11 +186,27 @@
         let listHtml = '', total = 0;
         for (let key in cart) {
             let itemTotal = cart[key].qty * cart[key].price;
-            listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>${cart[key].qty}x ${key}</span><span>Rs. ${itemTotal}</span></div>`;
+            listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span>${cart[key].qty}x ${key}</span>
+                            <span>Rs. ${itemTotal}</span>
+                         </div>`;
             total += itemTotal;
         }
-        let finalTotal = Math.ceil(total / 50) * 50;
-        document.getElementById('cart-list').innerHTML = listHtml + `<div style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;">Subtotal: Rs. ${total}<br>Delivery: Rs. ${finalTotal - total}</div>`;
+        
+        let subtotal = total;
+        let finalTotal = Math.ceil(subtotal / 50) * 50;
+        let delivery = finalTotal - subtotal;
+        
+        listHtml += `<div style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;">
+                        <div>Subtotal: Rs. ${subtotal}</div>
+                        <div>Delivery Charges: Rs. ${delivery}</div>
+                     </div>
+                     <div style="background: #f8f8f8; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; border: 1px solid #eee;">
+                        <div style="font-weight: 700; font-size: 15px;">EasyPaisa: 0305-5408090</div>
+                        <div style="font-size: 13px; color: #666;">Account Title: Abdul Latif</div>
+                     </div>`;
+                     
+        document.getElementById('cart-list').innerHTML = listHtml;
         document.getElementById('final-total').innerText = finalTotal;
     }
 
@@ -188,24 +214,58 @@
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((pos) => {
-                document.getElementById('cust-addr-live').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                document.getElementById('cust-addr-live').value = mapLink;
+                alert("Location captured! You can now send the order.");
+            }, (error) => {
+                alert("Location access denied. Please enable it in browser settings.");
             });
+        } else {
+            alert("Geolocation not supported.");
         }
     }
 
     function sendOrder() {
         const name = document.getElementById('cust-name').value;
-        const addr = document.getElementById('cust-addr-manual').value;
-        const loc = document.getElementById('cust-addr-live').value;
-        if(!name || (!addr && !loc)) { alert("Enter Name and Address!"); return; }
+        const manualAddr = document.getElementById('cust-addr-manual').value;
+        const liveLoc = document.getElementById('cust-addr-live').value;
+        
+        if(!name || (!manualAddr && !liveLoc)) { 
+            alert("Please enter Name and at least one Address option (Manual or Live)!"); 
+            return; 
+        }
+
+        let total = 0;
+        for (let key in cart) {
+            total += (cart[key].qty * cart[key].price);
+        }
+        
+        let subtotal = total;
+        let grandTotal = Math.ceil(subtotal / 50) * 50;
+        let delivery = grandTotal - subtotal;
+        
         let text = `*New Order - ZINGER CLUB*%0A------------------------%0A`;
-        for (let key in cart) text += `• ${key} (${cart[key].qty}x) = Rs. ${cart[key].qty * cart[key].price}%0A`;
-        text += `%0A*Name:* ${name}%0A*Address:* ${addr || "Live Loc"}`;
+        for (let key in cart) {
+            text += `• ${key} (${cart[key].qty}x) = Rs. ${cart[key].qty * cart[key].price}%0A`;
+        }
+        
+        text += `%0A------------------------%0A`;
+        text += `*Subtotal:* Rs. ${subtotal}%0A`;
+        text += `*Delivery Charges:* Rs. ${delivery}%0A`;
+        text += `*Grand Total:* Rs. ${grandTotal}%0A%0A`;
+        text += `*Payment Info:* EasyPaisa (0305-5408090)%0A%0A`;
+        text += `*Name:* ${name}%0A`;
+        text += `*Manual Address:* ${manualAddr || "N/A"}%0A`;
+        text += `*Live Location:* ${liveLoc || "N/A"}`;
+        
         window.open(`https://api.whatsapp.com/send?phone=923055408090&text=${text}`, '_blank');
     }
 
     renderMenu();
 </script>
+
 </body>
 </html>
