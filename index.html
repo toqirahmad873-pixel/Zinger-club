@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zinger Club | Online Order</title>
     
-    <!-- Force New Icons -->
+    <!-- Icons -->
     <link rel="icon" type="image/png" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
-    <link rel="shortcut icon" type="image/png" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
+    <link rel="shortcut icon" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
     
     <meta name="theme-color" content="#ce1212">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -17,29 +17,22 @@
     <style>
         :root { --gold: #d4af37; --red: #ce1212; --dark: #121212; }
         body { font-family: 'Poppins', sans-serif; background-color: #f4f4f4; margin: 0; padding-bottom: 120px; color: #333; }
-        
         .header { background: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&w=500&q=60'); background-size: cover; color: white; padding: 40px 20px; text-align: center; border-bottom: 4px solid var(--gold); }
         .header h1 { margin: 0; font-size: 32px; font-weight: 700; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
         .header p { margin: 5px 0 0; font-size: 14px; opacity: 0.9; }
-
         .container { padding: 15px; max-width: 600px; margin: auto; }
         .category-header { font-size: 18px; font-weight: 700; color: var(--dark); margin: 30px 0 15px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; text-transform: uppercase; }
-
         .item-card { background: white; border-radius: 20px; display: flex; align-items: center; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .card-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; margin-right: 15px; border: 1px solid #eee; }
-        
         .item-info { flex: 1; }
         .item-info h3 { margin: 0 0 4px 0; font-size: 16px; color: #111; }
         .item-info p { margin: 0 0 6px 0; font-size: 12px; color: #777; line-height: 1.3; }
         .price-tag { color: var(--red); font-weight: 700; font-size: 16px; display: block; }
-
         .counter { display: flex; align-items: center; background: #f0f0f0; border-radius: 12px; padding: 6px; }
         .counter button { background: var(--dark); color: white; border: none; width: 32px; height: 32px; border-radius: 8px; cursor: pointer; font-size: 20px; font-weight: bold; }
         .qty { margin: 0 12px; font-weight: 700; min-width: 20px; text-align: center; font-size: 17px; }
-
         .bottom-bar { position: fixed; bottom: 20px; left: 15px; right: 15px; background: var(--dark); color: white; padding: 20px; border-radius: 20px; display: none; justify-content: space-between; align-items: center; box-shadow: 0 12px 35px rgba(0,0,0,0.4); z-index: 999; border: 1px solid var(--gold); }
         .checkout-btn { background: var(--gold); color: black; border: none; padding: 12px 25px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; }
-
         #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
         .modal-box { background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 400px; }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1.5px solid #eee; border-radius: 12px; font-size: 15px; box-sizing: border-box; }
@@ -57,7 +50,7 @@
 
 <div class="bottom-bar" id="cart-bar">
     <div><span id="total-qty">0</span> Items | Rs. <span id="total-price">0</span></div>
-    <button class="checkout-btn" onclick="openCheckout()">Order Now </button>
+    <button class="checkout-btn" onclick="openCheckout()">Order Now</button>
 </div>
 
 <div id="modal">
@@ -65,16 +58,11 @@
         <h2 style="margin:0 0 15px;">Checkout 🛒</h2>
         <div id="cart-list" style="margin-bottom: 20px; font-size: 14px; max-height: 200px; overflow-y: auto;"></div>
         <div style="font-weight: 700; font-size: 20px; margin-bottom: 15px; color: var(--red);">Total: Rs. <span id="final-total">0</span></div>
-        
         <input type="text" id="cust-name" placeholder="Full Name">
         <input type="text" id="cust-addr-manual" placeholder="Address">
-        
-        <div style="text-align: center; color: #888; font-size: 12px; margin: 10px 0;">OR</div>
-        
-        <button type="button" onclick="getLocation()" class="confirm-btn" style="background:#007bff;">📍 Use Live Location</button>
+        <button type="button" onclick="getLocation()" class="confirm-btn" style="background:#007bff; margin-bottom:10px;">📍 Use Live Location</button>
         <input type="text" id="cust-addr-live" placeholder="Live Location Link" readonly style="background: #eee;">
-        
-        <button class="confirm-btn" onclick="sendOrder()" style="background: #25d366;">Send on WhatsApp </button>
+        <button class="confirm-btn" onclick="sendOrder()" style="background: #25d366;">Send on WhatsApp</button>
         <button onclick="closeModal()" style="width:100%; background:none; border:none; color:#888; margin-top:12px; cursor:pointer;">Back to Menu</button>
     </div>
 </div>
@@ -101,36 +89,29 @@
             { n: 'Regular Fries', p: 100, d: 'Salted crispy fries', img: 'https://i.postimg.cc/7hdBNcPw/Untitled_3_copy.png.jpeg' }
         ]}
     ];
-            const coldDrinksList = { 
+
+    const coldDrinksList = { 
         cat: 'COLD DRINKS ', 
         items: [
-            { n: 'Coca-Cola 300ml', p: 80, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/xTC4nSh5/42267-removebg-preview.png' },
-            { n: 'Sprite 300ml', p: 80, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/gjnRn4vc/42374-removebg-preview.png' },
-            { n: 'Pepsi 500ml', p: 120, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/bNHpF5sh/42269-removebg-preview.png' },
-            { n: '7up 500ml', p: 120, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/Gp9Rthzt/42270-removebg-preview.png' },
-            { n: 'Coca-Cola 1 litre', p: 160, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/SRck4TdP/42266-removebg-preview.png' },
-            { n: 'Sprite 1 litre', p: 160, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/br5kXv6x/42387-removebg-preview.png' },
-            { n: 'Dew 1 litre', p: 160, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/MKrdx6cB/42384-removebg-preview.png' },
-            { n: 'Coca-Cola 1.5 litre', p: 200, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/Px2GbCyM/Smart-Label-Landing-Page.jpg' },
-            { n: 'Sprite 1.5 litre', p: 200, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/k492LSqN/42435-removebg-preview.png' },
-            { n: 'Dew 1.5 litre', p: 200, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/gj1mb93w/42271-removebg-preview.png' },
-            { n: 'Dew 2 litre', p: 240, d: 'Chilled refreshing soft drink', img: 'https://i.postimg.cc/850VL8XQ/42272-removebg-preview.png' }
+            { n: 'Coca-Cola 300ml', p: 80, d: 'Chilled soft drink', img: 'https://i.postimg.cc/xTC4nSh5/42267-removebg-preview.png' },
+            { n: 'Sprite 300ml', p: 80, d: 'Chilled soft drink', img: 'https://i.postimg.cc/gjnRn4vc/42374-removebg-preview.png' },
+            { n: 'Pepsi 500ml', p: 120, d: 'Chilled soft drink', img: 'https://i.postimg.cc/bNHpF5sh/42269-removebg-preview.png' },
+            { n: '7up 500ml', p: 120, d: 'Chilled soft drink', img: 'https://i.postimg.cc/Gp9Rthzt/42270-removebg-preview.png' }
         ]
     };
-    
-    
+
     let cart = {};
 
     function renderMenu() {
         const container = document.getElementById('menu-container');
         container.innerHTML = '';
-        menuData.forEach(section => {
+        [...menuData, coldDrinksList].forEach(section => {
             container.innerHTML += `<div class="category-header">${section.cat}</div>`;
             section.items.forEach(item => {
                 const itemId = item.n.replace(/\s+/g, '');
                 container.innerHTML += `
                     <div class="item-card">
-                        <img src="${item.img}" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
+                        <img src="${item.img}" class="card-img" alt="${item.n}">
                         <div class="item-info">
                             <h3>${item.n}</h3>
                             <p>${item.d}</p>
@@ -144,31 +125,12 @@
                     </div>`;
             });
         });
-        
-        container.innerHTML += `<div class="category-header">${coldDrinksList.cat}</div>`;
-        coldDrinksList.items.forEach(item => {
-            const itemId = item.n.replace(/\s+/g, '');
-            container.innerHTML += `
-                <div class="item-card">
-                    <img src="${item.img}" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
-                    <div class="item-info">
-                        <h3>${item.n}</h3>
-                        <p>${item.d}</p>
-                        <span class="price-tag">Rs. ${item.p}</span>
-                    </div>
-                    <div class="counter">
-                        <button onclick="changeQty('${item.n}', ${item.p}, -1)">-</button>
-                        <span class="qty" id="qty-${itemId}">0</span>
-                        <button onclick="changeQty('${item.n}', ${item.p}, 1)">+</button>
-                    </div>
-                </div>`;
-        });
     }
 
     function changeQty(name, price, delta) {
         if (!cart[name]) cart[name] = { qty: 0, price: price };
         cart[name].qty += delta;
-        if (cart[name].qty <= 0) { cart[name].qty = 0; delete cart[name]; }
+        if (cart[name].qty <= 0) delete cart[name];
         const itemId = name.replace(/\s+/g, '');
         document.getElementById(`qty-${itemId}`).innerText = cart[name] ? cart[name].qty : 0;
         updateBar();
@@ -178,11 +140,9 @@
         let tQty = 0, tPrice = 0;
         for (let key in cart) { tQty += cart[key].qty; tPrice += (cart[key].qty * cart[key].price); }
         const bar = document.getElementById('cart-bar');
-        if(tQty > 0) {
-            bar.style.display = 'flex';
-            document.getElementById('total-qty').innerText = tQty;
-            document.getElementById('total-price').innerText = tPrice;
-        } else { bar.style.display = 'none'; }
+        bar.style.display = tQty > 0 ? 'flex' : 'none';
+        document.getElementById('total-qty').innerText = tQty;
+        document.getElementById('total-price').innerText = tPrice;
     }
 
     function openCheckout() {
@@ -190,86 +150,33 @@
         let listHtml = '', total = 0;
         for (let key in cart) {
             let itemTotal = cart[key].qty * cart[key].price;
-            listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
-                            <span>${cart[key].qty}x ${key}</span>
-                            <span>Rs. ${itemTotal}</span>
-                         </div>`;
+            listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:5px;"><span>${cart[key].qty}x ${key}</span><span>Rs. ${itemTotal}</span></div>`;
             total += itemTotal;
         }
-        
-        let subtotal = total;
-        let finalTotal = Math.ceil(subtotal / 50) * 50;
-        let delivery = finalTotal - subtotal;
-        
-        listHtml += `<div style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;">
-                        <div>Subtotal: Rs. ${subtotal}</div>
-                        <div>Delivery Charges: Rs. ${delivery}</div>
-                     </div>
-                     <div style="background: #f8f8f8; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; border: 1px solid #eee;">
-                        <div style="font-weight: 700; font-size: 15px;">EasyPaisa: 0305-5408090</div>
-                        <div style="font-size: 13px; color: #666;">Account Title: Abdul Latif</div>
-                     </div>`;
-                     
         document.getElementById('cart-list').innerHTML = listHtml;
-        document.getElementById('final-total').innerText = finalTotal;
+        document.getElementById('final-total').innerText = total;
     }
 
     function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
     function getLocation() {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
-                document.getElementById('cust-addr-live').value = mapLink;
-                alert("Location captured! You can now send the order.");
-            }, (error) => {
-                alert("Location access denied. Please enable it in browser settings.");
+            navigator.geolocation.getCurrentPosition(pos => {
+                document.getElementById('cust-addr-live').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
             });
-        } else {
-            alert("Geolocation not supported.");
         }
     }
 
     function sendOrder() {
         const name = document.getElementById('cust-name').value;
-        const manualAddr = document.getElementById('cust-addr-manual').value;
-        const liveLoc = document.getElementById('cust-addr-live').value;
-        
-        if(!name || (!manualAddr && !liveLoc)) { 
-            alert("Please enter Name and at least one Address option (Manual or Live)!"); 
-            return; 
-        }
-
-        let total = 0;
-        for (let key in cart) {
-            total += (cart[key].qty * cart[key].price);
-        }
-        
-        let subtotal = total;
-        let grandTotal = Math.ceil(subtotal / 50) * 50;
-        let delivery = grandTotal - subtotal;
-        
-        let text = `*New Order - ZINGER CLUB*%0A------------------------%0A`;
-        for (let key in cart) {
-            text += `• ${key} (${cart[key].qty}x) = Rs. ${cart[key].qty * cart[key].price}%0A`;
-        }
-        
-        text += `%0A------------------------%0A`;
-        text += `*Subtotal:* Rs. ${subtotal}%0A`;
-        text += `*Delivery Charges:* Rs. ${delivery}%0A`;
-        text += `*Grand Total:* Rs. ${grandTotal}%0A%0A`;
-        text += `*Payment Info:* EasyPaisa (0305-5408090)%0A%0A`;
-        text += `*Name:* ${name}%0A`;
-        text += `*Manual Address:* ${manualAddr || "N/A"}%0A`;
-        text += `*Live Location:* ${liveLoc || "N/A"}`;
-        
+        if(!name) return alert("Please enter your name!");
+        let text = `*Order from Zinger Club*%0A`;
+        for (let key in cart) text += `• ${key} (${cart[key].qty}x)%0A`;
+        text += `%0A*Name:* ${name}%0A*Address:* ${document.getElementById('cust-addr-manual').value || "N/A"}%0A*Live Loc:* ${document.getElementById('cust-addr-live').value || "N/A"}`;
         window.open(`https://api.whatsapp.com/send?phone=923055408090&text=${text}`, '_blank');
     }
 
     renderMenu();
 </script>
-
 </body>
 </html>
