@@ -1,0 +1,20 @@
+{
+  "name": "Zinger Club",
+  "short_name": "ZingerClub",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#ce1212",
+  "theme_color": "#ce1212",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/qvnF1k3t/Zinger.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://i.postimg.cc/qvnF1k3t/Zinger.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
