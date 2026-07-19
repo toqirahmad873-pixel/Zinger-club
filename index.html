@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zinger Club | Online Order</title>
     
-    <!-- Manifest and Icon Links -->
     <link rel="manifest" href="manifest-v2.json">
     <link rel="icon" type="image/png" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
@@ -75,7 +74,7 @@
         <button type="button" onclick="getLocation()" class="confirm-btn" style="background:#007bff;">📍 Use Live Location</button>
         <input type="text" id="cust-addr-live" placeholder="Live Location Link" readonly style="background: #eee;">
         
-        <button class="confirm-btn" onclick="sendOrder()" style="background: #25d366;">Send on WhatsApp</button>
+        <button class="confirm-btn" onclick="sendOrder()" style="background: #25d366; margin-top: 10px;">Send on WhatsApp</button>
         <button onclick="closeModal()" style="width:100%; background:none; border:none; color:#888; margin-top:12px; cursor:pointer;">Back to Menu</button>
     </div>
 </div>
@@ -99,7 +98,7 @@
         { cat: 'SIDES & FRIES ', items: [
             { n: 'Chicken Nuggets (10pc)', p: 500, d: 'Golden fried nuggets', img: 'https://i.postimg.cc/dtGXBsdq/nugtts.png' },
             { n: 'Hot Shot (10pc)', p: 500, d: 'Spicy bite-sized chicken', img: 'https://i.postimg.cc/pdWgrwmR/Hot_shot.png' },
-            { n: 'Regular Fries', p: 100, d: 'Salted crispy fries', img: 'https://i.postimg.cc/7hdBNcPw/Untitled_3_copy.png' }
+            { n: 'Regular Fries', p: 200, d: 'Salted crispy fries', img: 'https://i.postimg.cc/7hdBNcPw/Untitled_3_copy.png' }
         ]}
     ];
 
@@ -125,7 +124,6 @@
     function renderMenu() {
         const container = document.getElementById('menu-container');
         container.innerHTML = '';
-        
         [...menuData, coldDrinksList].forEach(section => {
             container.innerHTML += `<div class="category-header">${section.cat}</div>`;
             section.items.forEach(item => {
@@ -160,22 +158,53 @@
     function updateBar() {
         let tQty = 0, tPrice = 0;
         for (let key in cart) { tQty += cart[key].qty; tPrice += (cart[key].qty * cart[key].price); }
-        const bar = document.getElementById('cart-bar');
-        bar.style.display = tQty > 0 ? 'flex' : 'none';
+        document.getElementById('cart-bar').style.display = tQty > 0 ? 'flex' : 'none';
         document.getElementById('total-qty').innerText = tQty;
         document.getElementById('total-price').innerText = tPrice;
     }
 
+    // Updated Calculation Logic
+    function calculateOrderTotals() {
+        let subtotal = 0;
+        for (let key in cart) { subtotal += (cart[key].qty * cart[key].price); }
+
+        // 1. Initial charges (agar 500 se kam hai to 50, warna 0)
+        let initialDelivery = subtotal < 500 ? 50 : 0;
+        
+        // 2. Total with initial delivery
+        let totalWithInitial = subtotal + initialDelivery;
+        
+        // 3. Next 50 ke multiple par round off
+        let finalTotal = Math.ceil(totalWithInitial / 50) * 50;
+        
+        // 4. Actual delivery charges jo user ko nazar ayenge
+        let delivery = finalTotal - subtotal;
+        
+        return { subtotal, delivery, finalTotal };
+    }
+
     function openCheckout() {
         document.getElementById('modal').style.display = 'flex';
-        let listHtml = '', total = 0;
+        let listHtml = '';
         for (let key in cart) {
             let itemTotal = cart[key].qty * cart[key].price;
-            listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;"><span>${cart[key].qty}x ${key}</span><span>Rs. ${itemTotal}</span></div>`;
-            total += itemTotal;
+            listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+                            <span>${cart[key].qty}x ${key}</span>
+                            <span>Rs. ${itemTotal}</span>
+                         </div>`;
         }
-        let finalTotal = Math.ceil(total / 50) * 50;
-        document.getElementById('cart-list').innerHTML = listHtml;
+        
+        const { subtotal, delivery, finalTotal } = calculateOrderTotals();
+        
+        document.getElementById('cart-list').innerHTML = listHtml + `
+            <div style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;">
+                <div>Subtotal: Rs. ${subtotal}</div>
+                <div>Delivery Charges: Rs. ${delivery}</div>
+            </div>
+            <div style="background: #f8f8f8; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; border: 1px solid #eee;">
+                <div style="font-weight: 700; font-size: 15px;">EasyPaisa: 0305-5408090</div>
+                <div style="font-size: 13px; color: #666;">Account Title: Abdul Latif</div>
+            </div>`;
         document.getElementById('final-total').innerText = finalTotal;
     }
 
@@ -192,9 +221,12 @@
     function sendOrder() {
         const name = document.getElementById('cust-name').value;
         if(!name) return alert("Please enter name!");
+        
+        const { subtotal, delivery, finalTotal } = calculateOrderTotals();
         let text = `*Zinger Club Order*%0A`;
         for (let key in cart) text += `• ${key} (${cart[key].qty}x)%0A`;
-        text += `%0A*Name:* ${name}%0A*Address:* ${document.getElementById('cust-addr-manual').value || "N/A"}%0A*Location:* ${document.getElementById('cust-addr-live').value || "N/A"}`;
+        text += `%0A*Subtotal:* Rs. ${subtotal}%0A*Delivery Charges:* Rs. ${delivery}%0A*Total:* Rs. ${finalTotal}%0A%0A*Name:* ${name}%0A*Address:* ${document.getElementById('cust-addr-manual').value || "N/A"}%0A*Location:* ${document.getElementById('cust-addr-live').value || "N/A"}`;
+        
         window.open(`https://api.whatsapp.com/send?phone=923055408090&text=${text}`, '_blank');
     }
 
