@@ -239,12 +239,29 @@
     }
 
     function sendOrder() {
-        const name = document.getElementById('cust-name').value;
-        if(!name) return alert("Please enter name!");
+        const name = document.getElementById('cust-name').value.trim();
+        const addrManual = document.getElementById('cust-addr-manual').value.trim();
+        const addrLive = document.getElementById('cust-addr-live').value.trim();
+
+        if (!name) {
+            alert("Please enter your Name!");
+            return;
+        }
+
+        if (!addrManual) {
+            alert("Please enter your Address!");
+            return;
+        }
+
+        if (!addrLive) {
+            alert("Please click 'Use Live Location' to select your location!");
+            return;
+        }
+
         const { subtotal, delivery, finalTotal } = calculateOrderTotals();
         let text = `*Zinger Club Order*%0A`;
         for (let key in cart) text += `• ${key} (${cart[key].qty}x)%0A`;
-        text += `%0A*Subtotal:* Rs. ${subtotal}%0A*Delivery Charges:* Rs. ${delivery}%0A*Total:* Rs. ${finalTotal}%0A%0A*Name:* ${name}%0A*Address:* ${document.getElementById('cust-addr-manual').value || "N/A"}%0A*Location:* ${document.getElementById('cust-addr-live').value || "N/A"}`;
+        text += `%0A*Subtotal:* Rs. ${subtotal}%0A*Delivery Charges:* Rs. ${delivery}%0A*Total:* Rs. ${finalTotal}%0A%0A*Name:* ${name}%0A*Address:* ${addrManual}%0A*Location:* ${addrLive}`;
         window.open(`https://api.whatsapp.com/send?phone=923055408090&text=${text}`, '_blank');
     }
 
