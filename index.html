@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zinger Club | Online Order</title>
     
-    <link rel="manifest" href="manifest-v2.json">
     <link rel="icon" type="image/png" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
 
@@ -54,7 +53,7 @@
         
         /* Custom Home Screen Button */
         #install-btn {
-            display: none;
+            display: block;
             position: fixed;
             bottom: 95px;
             left: 50%;
@@ -108,50 +107,21 @@
 </div>
 
 <script>
-    let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
 
-    // Event handler for capturing prompt
-    window.addEventListener('beforeinstallprompt', (e) => {
-        e.preventDefault();
-        deferredPrompt = e;
-        if (installBtn) {
-            installBtn.style.display = 'block';
-        }
-    });
-
-    // Fast Shortcut Trigger
-    installBtn?.addEventListener('click', async () => {
-        if (deferredPrompt) {
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            console.log(`User outcome: ${outcome}`);
-            deferredPrompt = null;
-            installBtn.style.display = 'none';
-        } else {
-            alert("Shortcut add karne ke liye Browser Menu (⋮ or Share) -> 'Add to Home Screen' select karein.");
-        }
-    });
-
-    window.addEventListener('appinstalled', () => {
-        if (installBtn) {
-            installBtn.style.display = 'none';
-        }
-    });
-
+    // Remove any previously registered service workers to prevent heavy App Install prompt
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.getRegistrations().then((registrations) => {
-                for (let registration of registrations) {
-                    registration.update();
-                }
-            });
-            
-            navigator.serviceWorker.register('/sw.js', { scope: '/' })
-                .then(reg => console.log('SW Registered'))
-                .catch(err => console.log('SW Error:', err));
+        navigator.serviceWorker.getRegistrations().then(registrations => {
+            for (let registration of registrations) {
+                registration.unregister();
+            }
         });
     }
+
+    // Direct Instant Shortcut Action
+    installBtn?.addEventListener('click', () => {
+        alert("📲 Home Screen par icon banane ke liye:\n\n1. Browser ke top-right (3 Dots ⋮) par click karein.\n2. 'Add to Home screen' select karein.\n\nIcon 1 second mein bina download ke ban jayega!");
+    });
 
     const menuData = [
         { cat: 'SPECIAL DEALS ', items: [
