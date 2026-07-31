@@ -1,21 +1,12 @@
-// sw.js
-const CACHE_NAME = 'zinger-v3';
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
+self.addEventListener('install', (e) => {
+  console.log('Service Worker Installed');
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => {
-      return Promise.all(
-        keys.map((key) => caches.delete(key))
-      );
-    }).then(() => self.clients.claim())
+self.addEventListener('fetch', (e) => {
+  // Simple fetch handler
+  e.respondWith(
+    caches.match(e.request).then((response) => {
+      return response || fetch(e.request);
+    })
   );
-});
-
-// Direct fetch handling - Zero background delay
-self.addEventListener('fetch', (event) => {
-  event.respondWith(fetch(event.request));
 });
