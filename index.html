@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zinger Club | Online Order</title>
+
+    <link rel="manifest" href="/manifest.json">
     
-    <!-- Correct Icons for Browser & Home Screen Shortcut -->
-    <link rel="icon" type="image/png" sizes="192x192" href="https://i.postimg.cc/qvnF1k3t/Zinger.png?v=100">
-    <link rel="icon" type="image/png" sizes="512x512" href="https://i.postimg.cc/qvnF1k3t/Zinger.png?v=100">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/qvnF1k3t/Zinger.png?v=100">
-    <link rel="shortcut icon" href="https://i.postimg.cc/qvnF1k3t/Zinger.png?v=100">
+    <!-- Base64 Direct Embedded Icon (Bypasses External Links & Browser Defaults) -->
+    <link rel="icon" type="image/png" sizes="192x192" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
 
     <meta name="theme-color" content="#ce1212">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -27,11 +28,9 @@
         .container { padding: 15px; max-width: 600px; margin: auto; }
         .category-header { font-size: 18px; font-weight: 700; color: var(--dark); margin: 30px 0 15px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; text-transform: uppercase; }
 
-        /* Normal Item Card */
         .item-card { background: white; border-radius: 20px; display: flex; align-items: center; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .card-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; margin-right: 15px; border: 1px solid #eee; }
         
-        /* Combo Deal Card */
         .deal-card { background: #fff8e1; border: 2px solid var(--gold); border-radius: 20px; display: flex; align-items: center; padding: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; }
         .deal-card:hover { transform: scale(1.01); }
         .deal-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; margin-right: 15px; }
@@ -54,9 +53,8 @@
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1.5px solid #eee; border-radius: 12px; font-size: 15px; box-sizing: border-box; }
         .confirm-btn { background: #25d366; color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-weight: 700; cursor: pointer; }
 
-        /* Custom Home Screen Button */
         #install-btn {
-            display: block;
+            display: none;
             position: fixed;
             bottom: 95px;
             left: 50%;
@@ -81,7 +79,7 @@
     <p>Fresh & Delicious Fast Food | 3PM - 12AM</p>
 </div>
 
-<button id="install-btn">📲 Add Zinger Club to Home Screen</button>
+<button id="install-btn">📲 Install Zinger Club App</button>
 
 <div class="container" id="menu-container"></div>
 
@@ -110,20 +108,35 @@
 </div>
 
 <script>
+    // Register Service Worker for Instant Installation
+    let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
 
-    // Clear any stuck service workers from previous attempts
     if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.getRegistrations().then(registrations => {
-            for (let registration of registrations) {
-                registration.unregister();
-            }
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                console.log('Service Worker Registered Successfully');
+            }).catch(err => console.log('SW Registration Failed', err));
         });
     }
 
-    // Guide user for instant shortcut creation
-    installBtn?.addEventListener('click', () => {
-        alert("📲 Home Screen par shortcut banane ke liye:\n\n1. Browser ke top-right (3 Dots ⋮) par click karein.\n2. 'Add to Home screen' ya 'Install app' select karein.\n\nShortcut foran ban jayega!");
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.style.display = 'block';
+    });
+
+    installBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            if (outcome === 'accepted') {
+                installBtn.style.display = 'none';
+            }
+            deferredPrompt = null;
+        } else {
+            alert("📲 Home Screen par app add karne ke liye:\n\n1. Top-right (3 Dots ⋮) click karein.\n2. 'Add to Home screen' ya 'Install app' click karein.");
+        }
     });
 
     const menuData = [
@@ -282,15 +295,8 @@
         const addrManual = document.getElementById('cust-addr-manual').value.trim();
         const addrLive = document.getElementById('cust-addr-live').value.trim();
 
-        if (!name) {
-            alert("Please enter your Name!");
-            return;
-        }
-
-        if (!addrManual && !addrLive) {
-            alert("Please enter your Address OR click 'Use Live Location'!");
-            return;
-        }
+        if (!name) { alert("Please enter your Name!"); return; }
+        if (!addrManual && !addrLive) { alert("Please enter your Address OR click 'Use Live Location'!"); return; }
 
         const { subtotal, delivery, finalTotal } = calculateOrderTotals();
         let text = `*Zinger Club Order*%0A`;
