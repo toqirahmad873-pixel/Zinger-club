@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zinger Club | Online Order</title>
 
-    <link rel="manifest" href="/manifest.json">
+    <!-- Manifest Link -->
+    <link rel="manifest" href="/manifest.json?v=2">
     
-    <!-- Base64 Direct Embedded Icon (Bypasses External Links & Browser Defaults) -->
-    <link rel="icon" type="image/png" sizes="192x192" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
+    <!-- Icons pointing directly to your local favicon.png -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon.png?v=2">
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon.png?v=2">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.png?v=2">
+    <link rel="shortcut icon" href="/favicon.png?v=2">
 
     <meta name="theme-color" content="#ce1212">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -108,15 +111,15 @@
 </div>
 
 <script>
-    // Register Service Worker for Instant Installation
+    // Register Service Worker if present
     let deferredPrompt;
     const installBtn = document.getElementById('install-btn');
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js').then(reg => {
-                console.log('Service Worker Registered Successfully');
-            }).catch(err => console.log('SW Registration Failed', err));
+                console.log('Service Worker Registered');
+            }).catch(err => console.log('SW Registration Error', err));
         });
     }
 
@@ -135,7 +138,7 @@
             }
             deferredPrompt = null;
         } else {
-            alert("📲 Home Screen par app add karne ke liye:\n\n1. Top-right (3 Dots ⋮) click karein.\n2. 'Add to Home screen' ya 'Install app' click karein.");
+            alert("📲 App add karne ke liye:\n\n1. Top-right 3-Dots (⋮) par click karein.\n2. 'Add to Home screen' ya 'Install app' choose karein.");
         }
     });
 
