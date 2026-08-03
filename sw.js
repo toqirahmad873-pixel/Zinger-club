@@ -9,7 +9,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(clients.claim()); // Immediately take control of all pages
 });
 
-// Fetch event: Network-first approach so installation doesn't hang on caching images
+// Fetch event: Fast response strategy
 self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request).catch(() => caches.match(event.request))
