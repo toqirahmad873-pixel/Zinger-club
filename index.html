@@ -45,7 +45,7 @@
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             z-index: 998;
-            display: none; /* Pehle hidden hoga, event milne par show hoga */
+            display: flex;
             align-items: center;
             gap: 8px;
             animation: bounce 2s infinite;
@@ -81,7 +81,7 @@
         .bottom-bar { position: fixed; bottom: 20px; left: 15px; right: 15px; background: var(--dark); color: white; padding: 16px 20px; border-radius: 20px; display: none; justify-content: space-between; align-items: center; box-shadow: 0 12px 35px rgba(0,0,0,0.4); z-index: 999; border: 1px solid var(--gold); }
         .checkout-btn { background: var(--gold); color: black; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; }
 
-        #modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
+        #modal, #guide-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; align-items: center; justify-content: center; }
         .modal-box { background: white; border-radius: 25px; padding: 25px; width: 90%; max-width: 400px; }
         input { width: 100%; padding: 12px; margin: 10px 0; border: 1.5px solid #eee; border-radius: 12px; font-size: 15px; box-sizing: border-box; }
         .confirm-btn { background: #25d366; color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-weight: 700; cursor: pointer; }
@@ -106,6 +106,19 @@
     <button class="checkout-btn" onclick="openCheckout()">Order Now</button>
 </div>
 
+<!-- Fallback Guide Modal -->
+<div id="guide-modal">
+    <div class="modal-box" style="text-align: center;">
+        <h3 style="margin-top:0; color:var(--red);">📱 Install App Setup</h3>
+        <p style="font-size: 14px; color: #555; line-height: 1.6; text-align: left;">
+            App install karne ke liye yeh steps follow karein:
+            <br>1. Browser ke top-right par <b>3 Dots (⋮)</b> par click karein.
+            <br>2. <b>"Install app"</b> ya <b>"Add to Home screen"</b> ka option select karein.
+        </p>
+        <button onclick="closeGuideModal()" class="confirm-btn" style="background:var(--dark); margin-top:10px;">Theek Hai</button>
+    </div>
+</div>
+
 <div id="modal">
     <div class="modal-box">
         <h2 style="margin:0 0 15px;">Checkout 🛒</h2>
@@ -126,13 +139,21 @@
 </div>
 
 <script>
+    // Register Fast Service Worker
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('sw.js').then(reg => {
+            console.log('SW Registered Fast!');
+        }).catch(err => {
+            console.log('SW Registration failed', err);
+        });
+    }
+
     let deferredPrompt = null;
     const installBtn = document.getElementById('install-btn');
 
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
-        installBtn.style.display = 'flex'; // Jab prompt available ho tabhi button show hoga
     });
 
     async function triggerInstall() {
@@ -143,7 +164,13 @@
                 installBtn.style.display = 'none';
             }
             deferredPrompt = null;
+        } else {
+            document.getElementById('guide-modal').style.display = 'flex';
         }
+    }
+
+    function closeGuideModal() {
+        document.getElementById('guide-modal').style.display = 'none';
     }
 
     window.addEventListener('appinstalled', () => {
