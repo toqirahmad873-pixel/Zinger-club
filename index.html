@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zinger Club | Online Order</title>
     
-    <!-- Manifest and Icon Links -->
     <link rel="manifest" href="manifest-v2.json">
     <link rel="icon" type="image/png" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
     <link rel="apple-touch-icon" href="https://i.postimg.cc/qvnF1k3t/Zinger.png">
@@ -26,9 +25,16 @@
         .container { padding: 15px; max-width: 600px; margin: auto; }
         .category-header { font-size: 18px; font-weight: 700; color: var(--dark); margin: 30px 0 15px; border-bottom: 2px solid var(--gold); padding-bottom: 5px; text-transform: uppercase; }
 
+        /* Normal Item Card */
         .item-card { background: white; border-radius: 20px; display: flex; align-items: center; padding: 12px; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .card-img { width: 80px; height: 80px; border-radius: 15px; object-fit: cover; margin-right: 15px; border: 1px solid #eee; }
         
+        /* Combo Deal Card */
+        .deal-card { background: #fff8e1; border: 2px solid var(--gold); border-radius: 20px; display: flex; align-items: center; padding: 10px; margin-bottom: 12px; cursor: pointer; transition: 0.3s; }
+        .deal-card:hover { transform: scale(1.01); }
+        .deal-img { width: 60px; height: 60px; border-radius: 12px; object-fit: cover; margin-right: 15px; }
+        .deal-price { font-weight: 700; color: var(--red); font-size: 16px; margin-left: auto; }
+
         .item-info { flex: 1; }
         .item-info h3 { margin: 0 0 4px 0; font-size: 16px; color: #111; }
         .item-info p { margin: 0 0 6px 0; font-size: 12px; color: #777; line-height: 1.3; }
@@ -75,19 +81,32 @@
         <button type="button" onclick="getLocation()" class="confirm-btn" style="background:#007bff;">📍 Use Live Location</button>
         <input type="text" id="cust-addr-live" placeholder="Live Location Link" readonly style="background: #eee;">
         
-        <button class="confirm-btn" onclick="sendOrder()" style="background: #25d366;">Send on WhatsApp</button>
+        <button class="confirm-btn" onclick="sendOrder()" style="background: #25d366; margin-top: 10px;">Send on WhatsApp</button>
         <button onclick="closeModal()" style="width:100%; background:none; border:none; color:#888; margin-top:12px; cursor:pointer;">Back to Menu</button>
     </div>
 </div>
 
 <script>
     const menuData = [
+        { cat: 'SPECIAL DEALS ', items: [
+            { n: 'Couple Deal', p: 700, d: '2 Zinger Burgers + 1 Litre Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
+            { n: 'Family Deal', p: 1300, d: '4 Zinger Burgers + 1.5 Litre Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
+            { n: 'Gathering Deal', p: 2500, d: '5 Zinger Burgers + 5 Shawarma + 2 Litre Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' }
+        ]},
+        { cat: 'REGULAR COMBO DEALS ', items: [
+            { n: 'Deal 1', p: 400, d: 'Zinger Burger+ Fries + Regular Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
+            { n: 'Deal 2', p: 1000, d: '2 Zinger Burger + 5pc Nuggets + Fries + 1 Litre Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
+            { n: 'Deal 3', p: 700, d: '1 Zinger Burger + 1 Patty Burger + 1 Litre Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
+            { n: 'Deal 4', p: 900, d: '4 Chicken Shawarma + 1 Litre Cold Drink', img: 'https://i.postimg.cc/qqxsN5tW/Chicken_Shwarma.png' },
+            { n: 'Deal 5', p: 1500, d: '5 Zinger Burgers + 1.5 Litre Cold Drink', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
+            { n: 'Deal 6', p: 1100, d: '4 Zinger Shawarma + 1 Litre Cold Drink', img: 'https://i.postimg.cc/qqxsN5tW/Chicken_Shwarma.png' }
+        ]},
         { cat: 'BURGERS ', items: [
             { n: 'Zinger Burger', p: 300, d: 'Crispy fried chicken thigh, mayo, lettuce', img: 'https://i.postimg.cc/qvnF1k3t/Zinger.png' },
-            { n: 'Patty Burger', p: 250, d: 'Spicy chicken patty, BBQ sauce', img: 'https://i.postimg.cc/7PGj5MZb/patty_1.png' },
             { n: 'Chicken fillet Burger', p: 300, d: 'Classic chicken piece, onion, tomato', img: 'https://i.postimg.cc/L8CVkwyn/Chicken.png' },
             { n: 'Double Decker', p: 450, d: 'Two chicken patties, cheese, special sauce', img: 'https://i.postimg.cc/gJrQq3qk/Double_Decker.png' },
             { n: 'Chicken Cheese Burger', p: 350, d: 'Chicken thigh, cheese slice, cucumber', img: 'https://i.postimg.cc/X7WxnwZh/Chicken_Cheese.png' },
+            { n: 'Chicken Burger', p: 250, d: 'Chicken, cucumber', img: 'https://i.postimg.cc/NjhNHvxF/44407-removebg-preview.png' },
             { n: 'Shami Burger', p: 160, d: 'Chicken shami, egg fry, cucumber', img: 'https://i.postimg.cc/vT5MRCqh/images-43.jpg' }
         ]},
         { cat: 'SHAWARMA & ROLLS ', items: [
@@ -97,7 +116,6 @@
             { n: 'Open Shawarma', p: 450, d: 'Platter with chicken, 3 breads, salad', img: 'https://i.postimg.cc/PfRFhLbr/Opne_Shwarma.png' }
         ]},
         { cat: 'SIDES & FRIES ', items: [
-            { n: 'Chicken Nuggets (10pc)', p: 500, d: 'Golden fried nuggets', img: 'https://i.postimg.cc/dtGXBsdq/nugtts.png' },
             { n: 'Hot Shot (10pc)', p: 500, d: 'Spicy bite-sized chicken', img: 'https://i.postimg.cc/pdWgrwmR/Hot_shot.png' },
             { n: 'Regular Fries', p: 200, d: 'Salted crispy fries', img: 'https://i.postimg.cc/7hdBNcPw/Untitled_3_copy.png' }
         ]}
@@ -125,25 +143,36 @@
     function renderMenu() {
         const container = document.getElementById('menu-container');
         container.innerHTML = '';
-        
         [...menuData, coldDrinksList].forEach(section => {
             container.innerHTML += `<div class="category-header">${section.cat}</div>`;
             section.items.forEach(item => {
                 const itemId = item.n.replace(/\s+/g, '');
-                container.innerHTML += `
-                    <div class="item-card">
-                        <img src="${item.img}" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
-                        <div class="item-info">
-                            <h3>${item.n}</h3>
-                            <p>${item.d}</p>
-                            <span class="price-tag">Rs. ${item.p}</span>
-                        </div>
-                        <div class="counter">
-                            <button onclick="changeQty('${item.n}', ${item.p}, -1)">-</button>
-                            <span class="qty" id="qty-${itemId}">0</span>
-                            <button onclick="changeQty('${item.n}', ${item.p}, 1)">+</button>
-                        </div>
-                    </div>`;
+                if (section.cat.includes('DEAL')) {
+                    container.innerHTML += `
+                        <div class="deal-card" onclick="changeQty('${item.n}', ${item.p}, 1)">
+                            <img src="${item.img}" class="deal-img" alt="${item.n}">
+                            <div class="item-info">
+                                <h3 style="margin:0; font-size:15px;">${item.n}</h3>
+                                <p style="margin:0; font-size:11px;">${item.d}</p>
+                            </div>
+                            <div class="deal-price">Rs. ${item.p}</div>
+                        </div>`;
+                } else {
+                    container.innerHTML += `
+                        <div class="item-card">
+                            <img src="${item.img}" class="card-img" alt="${item.n}" onerror="this.src='https://via.placeholder.com/80?text=Food'">
+                            <div class="item-info">
+                                <h3>${item.n}</h3>
+                                <p>${item.d}</p>
+                                <span class="price-tag">Rs. ${item.p}</span>
+                            </div>
+                            <div class="counter">
+                                <button onclick="changeQty('${item.n}', ${item.p}, -1)">-</button>
+                                <span class="qty" id="qty-${itemId}">0</span>
+                                <button onclick="changeQty('${item.n}', ${item.p}, 1)">+</button>
+                            </div>
+                        </div>`;
+                }
             });
         });
     }
@@ -153,38 +182,41 @@
         cart[name].qty += delta;
         if (cart[name].qty <= 0) { delete cart[name]; }
         const itemId = name.replace(/\s+/g, '');
-        document.getElementById(`qty-${itemId}`).innerText = cart[name] ? cart[name].qty : 0;
+        const qtyElement = document.getElementById(`qty-${itemId}`);
+        if(qtyElement) qtyElement.innerText = cart[name] ? cart[name].qty : 0;
         updateBar();
     }
 
     function updateBar() {
         let tQty = 0, tPrice = 0;
         for (let key in cart) { tQty += cart[key].qty; tPrice += (cart[key].qty * cart[key].price); }
-        const bar = document.getElementById('cart-bar');
-        bar.style.display = tQty > 0 ? 'flex' : 'none';
+        document.getElementById('cart-bar').style.display = tQty > 0 ? 'flex' : 'none';
         document.getElementById('total-qty').innerText = tQty;
         document.getElementById('total-price').innerText = tPrice;
     }
 
+    function calculateOrderTotals() {
+        let subtotal = 0;
+        for (let key in cart) { subtotal += (cart[key].qty * cart[key].price); }
+        let initialDelivery = subtotal < 500 ? 50 : 0;
+        let totalWithInitial = subtotal + initialDelivery;
+        let finalTotal = Math.ceil(totalWithInitial / 50) * 50;
+        let delivery = finalTotal - subtotal;
+        return { subtotal, delivery, finalTotal };
+    }
+
     function openCheckout() {
         document.getElementById('modal').style.display = 'flex';
-        let listHtml = '', total = 0;
-        
+        let listHtml = '';
         for (let key in cart) {
             let itemTotal = cart[key].qty * cart[key].price;
             listHtml += `<div style="display:flex; justify-content:space-between; margin-bottom:8px;">
                             <span>${cart[key].qty}x ${key}</span>
                             <span>Rs. ${itemTotal}</span>
                          </div>`;
-            total += itemTotal;
         }
-        
-        // Calculation Logic: Rounding rule to 50
-        let subtotal = total;
-        let finalTotal = Math.ceil(subtotal / 50) * 50;
-        let delivery = finalTotal - subtotal;
-        
-        let detailHtml = `
+        const { subtotal, delivery, finalTotal } = calculateOrderTotals();
+        document.getElementById('cart-list').innerHTML = listHtml + `
             <div style="margin-top:10px; border-top:1px solid #ddd; padding-top:10px;">
                 <div>Subtotal: Rs. ${subtotal}</div>
                 <div>Delivery Charges: Rs. ${delivery}</div>
@@ -193,8 +225,6 @@
                 <div style="font-weight: 700; font-size: 15px;">EasyPaisa: 0305-5408090</div>
                 <div style="font-size: 13px; color: #666;">Account Title: Abdul Latif</div>
             </div>`;
-                     
-        document.getElementById('cart-list').innerHTML = listHtml + detailHtml;
         document.getElementById('final-total').innerText = finalTotal;
     }
 
@@ -209,18 +239,24 @@
     }
 
     function sendOrder() {
-        const name = document.getElementById('cust-name').value;
-        if(!name) return alert("Please enter name!");
-        
-        let total = 0;
-        for (let key in cart) total += (cart[key].qty * cart[key].price);
-        let finalTotal = Math.ceil(total / 50) * 50;
-        let delivery = finalTotal - total;
+        const name = document.getElementById('cust-name').value.trim();
+        const addrManual = document.getElementById('cust-addr-manual').value.trim();
+        const addrLive = document.getElementById('cust-addr-live').value.trim();
 
+        if (!name) {
+            alert("Please enter your Name!");
+            return;
+        }
+
+        if (!addrManual && !addrLive) {
+            alert("Please enter your Address OR click 'Use Live Location'!");
+            return;
+        }
+
+        const { subtotal, delivery, finalTotal } = calculateOrderTotals();
         let text = `*Zinger Club Order*%0A`;
         for (let key in cart) text += `• ${key} (${cart[key].qty}x)%0A`;
-        text += `%0A*Subtotal:* ${total}%0A*Delivery:* ${delivery}%0A*Total:* ${finalTotal}%0A%0A*Name:* ${name}%0A*Address:* ${document.getElementById('cust-addr-manual').value || "N/A"}%0A*Location:* ${document.getElementById('cust-addr-live').value || "N/A"}`;
-        
+        text += `%0A*Subtotal:* Rs. ${subtotal}%0A*Delivery Charges:* Rs. ${delivery}%0A*Total:* Rs. ${finalTotal}%0A%0A*Name:* ${name}%0A*Address:* ${addrManual || "N/A"}%0A*Location:* ${addrLive || "N/A"}`;
         window.open(`https://api.whatsapp.com/send?phone=923055408090&text=${text}`, '_blank');
     }
 
